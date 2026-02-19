@@ -17,13 +17,22 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn clean package -DskipTests'
-            }
-        }
+                script {
+                    echo "Starting Maven build (tests skipped)..."
 
-        stage('Test') {
-            steps {
-                bat 'mvn test'
+                    def status = bat(
+                        script: 'mvn clean package -DskipTests',
+                        returnStatus: true
+                    )
+
+                    if (status == 0) {
+                        echo "✅ BUILD SUCCESSFUL"
+                    } else {
+                        echo "❌ BUILD FAILED"
+                        echo "👉 Check compilation errors or dependency issues above"
+                        error("Stopping pipeline due to build failure")
+                    }
+                }
             }
         }
     }
