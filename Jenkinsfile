@@ -15,14 +15,23 @@ pipeline {
 
         stage('Build') {
             steps {
-                mvn 'clean package -DskipTests'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                mvn 'test'
+                sh 'mvn test'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build completed successfully'
+        }
+        failure {
+            echo 'Build failed'
         }
     }
 }
